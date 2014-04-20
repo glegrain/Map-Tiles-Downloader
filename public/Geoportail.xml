@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource> 
+<name>IGN Geoportail</name> 
+<url>http://wxs.ign.fr/6qcguib31zj0w42ht311a1lz/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={$z}&TILEROW={$y}&TILECOL={$x}&FORMAT=image%2Fjpeg</url>
+<serverParts>a b c</serverParts> 
+</customMapSource>
