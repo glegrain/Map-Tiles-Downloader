@@ -82,11 +82,11 @@ app.get('/geoportail/:zoom/:x/:y', function(req, res) {
 app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
     var x = req.params.x;
     var y = req.params.y;
-    var zoom = req.params.zoom;
+    var zoom = req.params.zoom + 12;
     
     var options = {
         hostname: 'wmts2.geo.admin.ch',
-        path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/" + zoom + "/" + x + "/" + y +".jpeg",
+        path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/" + zoom + "/" + y + "/" + x +".jpeg",
         method: 'GET',
         headers: {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36",
