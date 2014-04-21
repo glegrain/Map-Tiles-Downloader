@@ -95,11 +95,12 @@ app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
     };
 
     http.get(options, function(http_res) {
-        //console.log('STATUS: ' + http_res.statusCode);
-        //console.log('HEADERS: ' + JSON.stringify(http_res.headers));
+        console.log("GET: "options.hostname + options.path);
+        console.log('STATUS: ' + http_res.statusCode);
+        console.log('HEADERS: ' + JSON.stringify(http_res.headers));
         
         var data = '';
-        http_res.setEncoding('binary');
+        http_res.setEncoding('binary'); 
         
         http_res.on('data', function (chunk) {
             data += chunk;
