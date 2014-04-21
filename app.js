@@ -82,8 +82,11 @@ app.get('/geoportail/:zoom/:x/:y', function(req, res) {
 app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
     var x = req.params.x;
     var y = req.params.y;
-    var zoom = req.params.zoom + 12;
-    
+    var zoom = parseInt(req.params.zoom,10);
+    zoom = Math.floor(zoom * 1.38);
+
+    //Mont Dolent: 45.922497 7.044554
+
     var options = {
         hostname: 'wmts2.geo.admin.ch',
         path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/" + zoom + "/" + y + "/" + x +".jpeg",
@@ -95,7 +98,7 @@ app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
     };
 
     http.get(options, function(http_res) {
-        console.log("GET: "options.hostname + options.path);
+        console.log("GET: " + options.hostname + options.path);
         console.log('STATUS: ' + http_res.statusCode);
         console.log('HEADERS: ' + JSON.stringify(http_res.headers));
         
