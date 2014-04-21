@@ -77,6 +77,49 @@ app.get('/geoportail/:zoom/:x/:y', function(req, res) {
     //res.send('ok');
 });
 
+
+
+app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
+    var x = req.params.x;
+    var y = req.params.y;
+    var zoom = req.params.zoom;
+    
+    var options = {
+        hostname: 'wmts2.geo.admin.ch',
+        path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/" + zoom + "/" + x + "/" + y +".jpeg",
+        method: 'GET',
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36",
+            "Referer": "http://map.schweizmobil.ch/?lang=en"
+        }
+    };
+
+    http.get(options, function(http_res) {
+        //console.log('STATUS: ' + http_res.statusCode);
+        //console.log('HEADERS: ' + JSON.stringify(http_res.headers));
+        
+        var data = '';
+        http_res.setEncoding('binary');
+        
+        http_res.on('data', function (chunk) {
+            data += chunk;
+            //console.log('BODY: ' + chunk);
+        });
+        
+        http_res.on('end', function() {
+            res.status(http_res.statusCode);
+            //res.set('Content-type', "image/jpeg");
+            res.type('jpeg');
+            res.end(data, 'binary');
+            //console.log('GOT FILE');
+        });
+
+    }).on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+    });
+    //res.send('ok');
+});
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
