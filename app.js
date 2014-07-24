@@ -36,11 +36,16 @@ app.get('/file/:file', function(req, res) {
     res.set('Content-type', 'force-download');
     res.download(__dirname + '/public/' + file);
 });
+
+
+/**
+ * FRANCE
+ */
 app.get('/geoportail/:zoom/:x/:y', function(req, res) {
     var x = req.params.x;
     var y = req.params.y;
     var zoom = req.params.zoom;
-    
+
     var options = {
         hostname: 'wxs.ign.fr',
         path: "/6qcguib31zj0w42ht311a1lz/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX=" + zoom + "&TILEROW=" + y + "&TILECOL=" + x + "&FORMAT=image%2Fjpeg",
@@ -54,15 +59,59 @@ app.get('/geoportail/:zoom/:x/:y', function(req, res) {
     http.get(options, function(http_res) {
         //console.log('STATUS: ' + http_res.statusCode);
         //console.log('HEADERS: ' + JSON.stringify(http_res.headers));
-        
+
         var data = '';
         http_res.setEncoding('binary');
-        
+
         http_res.on('data', function (chunk) {
             data += chunk;
             //console.log('BODY: ' + chunk);
         });
-        
+
+        http_res.on('end', function() {
+            res.status(http_res.statusCode);
+            //res.set('Content-type', "image/jpeg");
+            res.type('jpeg');
+            res.end(data, 'binary');
+            //console.log('GOT FILE');
+        });
+
+    }).on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+    });
+    //res.send('ok');
+});
+
+/**
+ * ITALY
+ */
+app.get('/italy/:zoom/:x/:y', function(req, res) {
+    var x = req.params.x;
+    var y = req.params.y;
+    var zoom = req.params.zoom;
+
+    var options = {
+        hostname: 'wms.pcn.minambiente.it',
+        path: "/ogc?map=/ms_ogc/WMS_v1.TIONS=INIMAGE&SERVICE=WMS&REQUEST=GetMap&STYLES=&FORMAT=image%2Fjpeg&CRS=EPSG%3A4326&BBOX=36,6,41.12,11.12&WIDTH=256&HEIGHT=" + zoom,
+        method: 'GET',
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36"
+            //,"Referer": "http://m.geoportail.fr/index.html"
+        }
+    };
+
+    http.get(options, function(http_res) {
+        //console.log('STATUS: ' + http_res.statusCode);
+        //console.log('HEADERS: ' + JSON.stringify(http_res.headers));
+
+        var data = '';
+        http_res.setEncoding('binary');
+
+        http_res.on('data', function (chunk) {
+            data += chunk;
+            //console.log('BODY: ' + chunk);
+        });
+
         http_res.on('end', function() {
             res.status(http_res.statusCode);
             //res.set('Content-type', "image/jpeg");
@@ -78,18 +127,20 @@ app.get('/geoportail/:zoom/:x/:y', function(req, res) {
 });
 
 
-
+/**
+ * SWISS
+ */
 app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
     var x = req.params.x;
     var y = req.params.y;
     var zoom = parseInt(req.params.zoom,10);
-    zoom = Math.floor(zoom * 1.38);
+    zoom = Math.floor(zoom * 1.5 + 3.5);
 
     //Mont Dolent: 45.922497 7.044554
 
     var options = {
         hostname: 'wmts2.geo.admin.ch',
-        path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/" + zoom + "/" + y + "/" + x +".jpeg",
+        path: "/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/3857/" + zoom + "/" + y + "/" + x +".jpeg",
         method: 'GET',
         headers: {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36",
@@ -101,15 +152,15 @@ app.get('/swisstopo/:zoom/:x/:y', function(req, res) {
         console.log("GET: " + options.hostname + options.path);
         console.log('STATUS: ' + http_res.statusCode);
         console.log('HEADERS: ' + JSON.stringify(http_res.headers));
-        
+
         var data = '';
-        http_res.setEncoding('binary'); 
-        
+        http_res.setEncoding('binary');
+
         http_res.on('data', function (chunk) {
             data += chunk;
             //console.log('BODY: ' + chunk);
         });
-        
+
         http_res.on('end', function() {
             res.status(http_res.statusCode);
             //res.set('Content-type', "image/jpeg");
